@@ -11,7 +11,7 @@ import java.util.*
 
 class CrimeDetailsFragment : Fragment(){
 
-    private lateinit var crime: Crime
+    lateinit var crime: Crime
     //private lateinit var binding: FragmentCrimeDetailBinding
     private var _binding: FragmentCrimeDetailBinding? = null
 
@@ -25,7 +25,7 @@ class CrimeDetailsFragment : Fragment(){
 
         crime = Crime(
             UUID.randomUUID(),
-            title = "",
+            title = "New Crime Title",
             date = Date(),
             isSolved = false
         )
@@ -41,8 +41,26 @@ class CrimeDetailsFragment : Fragment(){
         _binding = FragmentCrimeDetailBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
-//wire view
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) { }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+//added with the help of chatGPT
+    binding.apply {
+        crimeTitle.doOnTextChanged { text, _, _, _ ->
+            crime = crime.copy(title = text.toString())
+        }
+
+        crimeDate.apply {
+            text = crime.date.toString()
+            isEnabled = false
+        }
+
+        crimeSolved.setOnCheckedChangeListener { _, isChecked ->
+            crime = crime.copy(isSolved = isChecked)
+        }
+    }
+}
+
+
     override fun onDestroyView() {
         super.onDestroyView()
         //binding = null
